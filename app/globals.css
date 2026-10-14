@@ -2,7 +2,7 @@
   --cobalt: #07080a;
   --paper: #0c0e11;
   --ink: #07080a;
-  --hot: #c8f135;
+  --hot: #f6b01e;
   --r: 24px;
   --pad: clamp(20px, 5vw, 72px);
   --sans: var(--font-geist-sans), system-ui, sans-serif;
@@ -44,7 +44,7 @@ section, header, footer { color: var(--fg); }
 .hero h1 span { display: block; }
 .hero .sub { margin-top: 26px; max-width: 34ch; font-size: clamp(17px, 1.5vw, 21px); color: var(--mute); }
 .btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 34px; padding: 16px 26px; border-radius: 999px; background: var(--hot); color: #000; font-weight: 600; font-size: 16px; white-space: nowrap; transition: transform .2s, box-shadow .2s; }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -10px rgba(200,241,53,.55); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -10px rgba(246,176,30,.55); }
 .btn:active { transform: scale(.98); }
 @media (max-width: 900px) { .hero { align-items: flex-start; } .hero-in { grid-template-columns: 1fr; } }
 
@@ -64,7 +64,7 @@ section, header, footer { color: var(--fg); }
 .about-in { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 6vw, 100px); align-items: start; }
 .about .pic { position: sticky; top: 110px; aspect-ratio: 4/5; border-radius: var(--r); background: var(--ink); transform: rotate(-2deg); }
 .about .pic img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--r); }
-.sticker { position: absolute; right: -14px; bottom: 28px; transform: rotate(6deg); background: var(--hot); color: #000; font-weight: 700; padding: 12px 18px; border-radius: 999px; font-size: 15px; letter-spacing: -0.01em; box-shadow: 0 10px 24px -10px rgba(200,241,53,.4); }
+.sticker { position: absolute; right: -14px; bottom: 28px; transform: rotate(6deg); background: var(--hot); color: #000; font-weight: 700; padding: 12px 18px; border-radius: 999px; font-size: 15px; letter-spacing: -0.01em; box-shadow: 0 10px 24px -10px rgba(246,176,30,.4); }
 .about .words { font-size: clamp(26px, 3.6vw, 52px); line-height: 1.16; letter-spacing: -0.03em; font-weight: 600; }
 .about .words span { display: inline-block; margin-right: 0.26em; }
 @media (max-width: 860px) { .about-in { grid-template-columns: 1fr; } .about .pic { position: relative; top: 0; max-width: 420px; } }
