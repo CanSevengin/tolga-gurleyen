@@ -71,9 +71,9 @@ function Hero({ lang }: { lang: Lang }) {
 
   return (
     <section id="top" className="hero" ref={ref}>
-      <motion.div className="blob" style={{ width: 520, height: 520, left: "-8%", top: "8%", background: "var(--coral)", y: py }} />
-      <motion.div className="blob" style={{ width: 460, height: 460, right: "-6%", top: "30%", background: "var(--blue)", y: textY }} />
-      <div className="blob" style={{ width: 360, height: 360, left: "40%", bottom: "-10%", background: "var(--pink)" }} />
+      <motion.div className="blob" style={{ width: 560, height: 560, left: "-10%", top: "6%", background: "rgba(255,255,255,.16)", y: py }} />
+      <motion.div className="blob" style={{ width: 480, height: 480, right: "-8%", top: "30%", background: "rgba(150,160,190,.16)", y: textY }} />
+      <div className="blob" style={{ width: 360, height: 360, left: "40%", bottom: "-12%", background: "rgba(255,255,255,.08)" }} />
       <div className="wrap hero-grid">
         <motion.div style={{ y: textY, opacity: fade }}>
           <motion.p className="hello" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.35 }}>
@@ -123,10 +123,10 @@ function Hero({ lang }: { lang: Lang }) {
         </motion.div>
 
         <motion.div style={{ y: py, rotate: rot, scale: sc, position: "relative" }} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.5 }}>
-          <motion.div className="sticker" style={{ background: "var(--yellow)", top: 24, left: -18 }} animate={{ y: [0, -10, 0], rotate: [-6, -3, -6] }} transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}>
+          <motion.div className="sticker" style={{ background: "#f5f5f7", top: 24, left: -18 }} animate={{ y: [0, -10, 0], rotate: [-6, -3, -6] }} transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}>
             30+ {lang === "tr" ? "yıl deneyim" : "years of experience"}
           </motion.div>
-          <motion.div className="sticker" style={{ background: "var(--mint)", bottom: 70, right: -14 }} animate={{ y: [0, 12, 0], rotate: [5, 2, 5] }} transition={{ repeat: Infinity, duration: 5.2, ease: "easeInOut" }}>
+          <motion.div className="sticker" style={{ background: "rgba(40,40,44,.85)", color: "#f5f5f7", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(14px)", bottom: 70, right: -14 }} animate={{ y: [0, 12, 0], rotate: [5, 2, 5] }} transition={{ repeat: Infinity, duration: 5.2, ease: "easeInOut" }}>
             📍 {h.location[lang]}
           </motion.div>
           <div className="portrait">
@@ -200,13 +200,12 @@ function Counter({ to, suffix, lang }: { to: number; suffix: string; lang: Lang 
   );
 }
 function Stats({ lang }: { lang: Lang }) {
-  const colors = ["var(--coral)", "var(--blue)", "var(--pink)", "var(--mint)"];
   return (
     <section className="stats">
       <div className="wrap stat-grid">
         {ui.stats.items.map((s, k) => (
           <Reveal key={k} delay={k * 0.08}>
-            <div style={{ ["--c" as string]: colors[k] }} className="stat">
+            <div className="stat">
               <div className="num"><Counter to={s.value} suffix={s.suffix} lang={lang} /></div>
               <div className="lab">{s.label[lang]}</div>
             </div>
@@ -262,7 +261,7 @@ function JobCard({ job, lang, open, toggle }: { job: Job; lang: Lang; open: bool
 function Work({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState<string | null>("babyjem");
   return (
-    <section id="work" className="work">
+    <section id="work" className="work light">
       <div className="wrap">
         <Reveal>
           <span className="kicker">{ui.work.kicker[lang]}</span>
@@ -363,10 +362,9 @@ function Memories({ lang }: { lang: Lang }) {
 
 /* ---------- SKILLS + EDU ---------- */
 function Skills({ lang }: { lang: Lang }) {
-  const cols = ["var(--coral)", "var(--yellow)", "var(--pink)", "var(--blue)", "var(--mint)"];
   const e = ui.edu;
   return (
-    <section className="skills">
+    <section className="skills light">
       <div className="wrap">
         <Reveal>
           <span className="kicker">{ui.skills.kicker[lang]}</span>
@@ -377,7 +375,6 @@ function Skills({ lang }: { lang: Lang }) {
             <motion.span
               key={k}
               className="chip"
-              style={{ ["--c" as string]: cols[k % cols.length] }}
               initial={{ opacity: 0, y: 24, scale: 0.9 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -389,7 +386,7 @@ function Skills({ lang }: { lang: Lang }) {
         </div>
         <div className="edu-grid">
           <Reveal className="card">
-            <h3>{e.kicker[lang]}</h3>
+            <h3>{lang === "tr" ? "Eğitim" : "Education"}</h3>
             {e.items.map((it, k) => (
               <div key={k} className="edu-item">
                 <b>{it.title[lang]}</b>
@@ -415,7 +412,7 @@ function Contact({ lang }: { lang: Lang }) {
   const c = ui.contact;
   return (
     <section id="contact" className="contact">
-      <div className="blob" style={{ width: 520, height: 520, left: "50%", top: "10%", marginLeft: -260, background: "var(--pink)", opacity: 0.35 }} />
+      <div className="blob" style={{ width: 560, height: 560, left: "50%", top: "6%", marginLeft: -280, background: "rgba(255,255,255,.14)", opacity: 0.6 }} />
       <div className="wrap" style={{ position: "relative" }}>
         <Reveal>
           <span className="kicker">{c.kicker[lang]}</span>

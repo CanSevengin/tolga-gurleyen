@@ -171,7 +171,7 @@ export const jobs: Job[] = [
       t("Uluslararası fuar standlarının planlanması ve yürütülmesi", "Planning and running international trade fair booths"),
       t("Müşteri hizmetleri ve üretim planlamasıyla sipariş teslimatının uyumu", "Aligning order fulfilment with customer service and production scheduling"),
     ],
-    color: "var(--blue)",
+    color: "var(--ink)",
     current: true,
   },
   {
@@ -188,7 +188,7 @@ export const jobs: Job[] = [
       t("Ülke distribütörleriyle iletişim, yeni bayilerle görüşmeler", "Communication with country distributors and meetings with new resellers"),
       t("OEM ürün yönetimi ve ihracat operasyonları", "OEM product management and export operations"),
     ],
-    color: "var(--mint)",
+    color: "var(--ink)",
   },
   {
     id: "cnr",
@@ -203,7 +203,7 @@ export const jobs: Job[] = [
     points: [
       t("2018'de 33.000 ziyaretçi, 3.500 m² net satış ve 50'den fazla influencer ile başarı hikâyesi", "A success story in 2018: 33,000 visitors, 3,500 m² of net sales and over 50 influencers"),
     ],
-    color: "var(--pink)",
+    color: "var(--ink)",
   },
   {
     id: "satnet",
@@ -219,7 +219,7 @@ export const jobs: Job[] = [
       t("Ulusal ve uluslararası bayi ağının kurulması, proje satışları", "Building the national and international reseller network and project sales"),
       t("Haftalık satış, proje ve fırsat raporlaması", "Weekly reporting on sales, projects and opportunities"),
     ],
-    color: "var(--yellow)",
+    color: "var(--ink)",
   },
   {
     id: "ict",
@@ -235,7 +235,7 @@ export const jobs: Job[] = [
       t("TV kanalları, bankalar ve uydu operatörleriyle görüşmeler, çeşitli ihalelere katılım", "Meetings with TV channels, banks and satellite operators, participation in several tenders"),
       t("Anten üreticileriyle distribütörlük anlaşmaları", "Distributor agreements with antenna manufacturers"),
     ],
-    color: "var(--blue)",
+    color: "var(--ink)",
   },
   {
     id: "mtv",
@@ -252,7 +252,7 @@ export const jobs: Job[] = [
       t("Hepsiburada, Limango, Markafoni gibi e-ticaret ve kampanya kanalları", "E-commerce and campaign channels such as Hepsiburada, Limango and Markafoni"),
       t("Hong Kong fuarında Tayvanlı üreticiyle anlaşma ve Türkiye distribütörlüğü", "A deal with a Taiwanese manufacturer at a Hong Kong fair and distribution in Turkey"),
     ],
-    color: "var(--coral)",
+    color: "var(--ink)",
   },
   {
     id: "steco",
@@ -268,7 +268,7 @@ export const jobs: Job[] = [
       t("Praktiker ile ilk büyük zincir mağaza anlaşması", "First major chain store deal with Praktiker"),
       t("Yurt içinde 9 farklı fuar organizasyonunda katılımcı olarak yer alma", "Took part in 9 different fairs in Turkey as an exhibitor"),
     ],
-    color: "var(--mint)",
+    color: "var(--ink)",
   },
   {
     id: "tuyap",
@@ -283,7 +283,7 @@ export const jobs: Job[] = [
     points: [
       t("5 yılda 2 Otomotiv, 1 Otobüs, 2 Bahçe ve 7 Yat fuarının başarıyla açılışı", "In 5 years successfully opened 2 Automotive, 1 Bus, 2 Garden and 7 Yacht fairs"),
     ],
-    color: "var(--pink)",
+    color: "var(--ink)",
   },
   {
     id: "telsim",
@@ -299,7 +299,7 @@ export const jobs: Job[] = [
       t("Masa tenisi takımının menajerliği, Türkiye ve KKTC'de sezon maçları", "Managed the table tennis team, with season matches in Turkey and Cyprus"),
       t("Plaj voleybolu, sokak basketbolu ve play-off turnuvaları", "Beach volleyball, street basketball and play-off tournaments"),
     ],
-    color: "var(--yellow)",
+    color: "var(--ink)",
   },
   {
     id: "turkcell",
@@ -314,7 +314,7 @@ export const jobs: Job[] = [
     points: [
       t("Fuarlarda şirketin yüzü olarak ziyaretçileri karşılamak", "Being the face of the company at fairs"),
     ],
-    color: "var(--blue)",
+    color: "var(--ink)",
   },
   {
     id: "radyod",
@@ -327,6 +327,6 @@ export const jobs: Job[] = [
       "I planned the weekly commercial minutes of the programmes and supported the live programme desk.",
     ),
     points: [],
-    color: "var(--coral)",
+    color: "var(--ink)",
   },
 ];

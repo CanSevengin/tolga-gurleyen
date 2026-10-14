@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://tolga-gurleyen.vercel.app"),
   title: "Tolga Gürleyen",
 };
-export const viewport: Viewport = { themeColor: "#0a0a12", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#000000", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
