@@ -38,6 +38,8 @@ export const ui = {
     cta: t("Yolculuğu izle", "Follow the journey"),
   },
   about: {
+    sticker: t("30+ yıl sahada", "30+ years in the field"),
+    board: t("Kalkışlar", "Departures"),
     text: t(
       "Radyoda reklam dakikalarını planlayarak başladım. Sonra fuar alanlarında, zincir mağaza raflarında, uydu bağlantılarında ve bugün bebek ürünlerinde çalıştım. Sektör değişti, iş aynı kaldı: doğru insanları bulmak, güven kurmak ve birlikte büyümek.",
       "I started by scheduling commercial minutes at a radio station. Since then I have worked on fair floors, on retail chain shelves, in satellite broadband and now in baby products. The industry changed, the job stayed the same: find the right people, build trust and grow together.",

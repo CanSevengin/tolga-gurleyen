@@ -2,8 +2,8 @@
 import { createRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
-import { LinkedinLogo, ArrowDown } from "@phosphor-icons/react";
-import Globe from "./Globe";
+import { LinkedinLogo, ArrowDown, ArrowRight } from "@phosphor-icons/react";
+import Board from "./Board";
 import { chapters, site, ui, type Lang } from "@/lib/content";
 
 type L = { tr: string; en: string };
@@ -34,20 +34,24 @@ function Nav({ lang }: { lang: Lang }) {
 
 function Hero({ lang }: { lang: Lang }) {
   const h = ui.hero;
+  const e = [0.2, 0.7, 0.2, 1] as [number, number, number, number];
   return (
     <header className="hero" id="top">
-      <Globe />
       <div className="hero-in">
-        <h1>
-          <motion.span initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1] }}>{h.headA[lang]}</motion.span>
-          <motion.span className="lime" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}>{h.headB[lang]}</motion.span>
-        </h1>
-        <motion.p className="sub" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4 }}>{h.sub[lang]}</motion.p>
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.55 }}>
-          <a className="btn" href="#journey">{h.cta[lang]} <ArrowDown size={18} weight="bold" /></a>
+        <div className="hero-l">
+          <h1>
+            <motion.span initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: e }}>{h.headA[lang]}</motion.span>
+            <motion.span className="hot" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: e }}>{h.headB[lang]}</motion.span>
+          </h1>
+          <motion.p className="sub" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4 }}>{h.sub[lang]}</motion.p>
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.55 }}>
+            <a className="btn" href="#journey">{h.cta[lang]} <ArrowDown size={18} weight="bold" /></a>
+          </motion.div>
+        </div>
+        <motion.div className="hero-r" initial={{ opacity: 0, y: 40, rotate: 2 }} animate={{ opacity: 1, y: 0, rotate: -1.5 }} transition={{ duration: 1, delay: 0.3, ease: e }}>
+          <Board title={ui.about.board[lang]} />
         </motion.div>
       </div>
-      <span className="mono coords">41.01°N · 28.98°E · Istanbul</span>
     </header>
   );
 }
@@ -65,7 +69,7 @@ function About({ lang }: { lang: Lang }) {
   return (
     <section className="about" id="about">
       <div className="about-in">
-        <div className="pic"><img src={site.photos.portrait} alt={site.name} /></div>
+        <div className="pic"><img src={site.photos.portrait} alt={site.name} /><span className="sticker">{ui.about.sticker[lang]}</span></div>
         <p className="words" ref={ref}>
           {words.map((w, i) => (
             <Word key={i} w={w} p={scrollYProgress} reduce={reduce} range={[i / words.length, Math.min(1, (i + 3) / words.length)]} />
@@ -84,19 +88,21 @@ function ChapterCard({ i, lang, selfRef, nextRef, reduce }: { i: number; lang: L
   const filter = useTransform(dim, (v) => `brightness(${v})`);
   return (
     <motion.article ref={selfRef as React.RefObject<HTMLElement>} className="card" style={{ top: 84 + i * 14, scale, filter }}>
-      <div>
-        <span className="yrs">{c.years[lang]}</span>
+      <div className="tk-main">
+        <div className="tk-top"><span>{c.years[lang]}</span><span>0{i + 1} / 0{chapters.length}</span></div>
         <h3>{c.title[lang]}</h3>
         <p>{c.text[lang]}</p>
-      </div>
-      <div className="right">
-        <div className="places">{c.places.map((p) => <span key={p}>{p}</span>)}</div>
-        <div>
-          <div className="stat">{c.stat}</div>
-          <div className="stat-l">{c.statLabel[lang]}</div>
+        <div className="route">
+          {c.places.map((p, k) => (
+            <span key={p}>{k > 0 && <ArrowRight size={14} weight="bold" />}{p}</span>
+          ))}
         </div>
       </div>
-      <span className="num">0{i + 1} / 0{chapters.length}</span>
+      <div className="tk-stub">
+        <div className="stat">{c.stat}</div>
+        <div className="stat-l">{c.statLabel[lang]}</div>
+        <div className="bars" aria-hidden />
+      </div>
     </motion.article>
   );
 }
@@ -137,14 +143,14 @@ function Babyjem({ lang }: { lang: Lang }) {
           <Photo k="fairPartners" alt={b.capA[lang]} />
           <div className="cap">{b.capA[lang]}</div>
         </motion.div>
-        <motion.div className="cell txt c5" {...fade}>
+        <motion.div className="cell txt cob c5" {...fade}>
           <div className="big">4</div>
           <div>
             <h3>{b.regionsTitle[lang]}</h3>
             <p>{b.regions[lang]}</p>
           </div>
         </motion.div>
-        <motion.div className="cell txt c4" {...fade}>
+        <motion.div className="cell txt ink c4" {...fade}>
           <h3>{b.cycleTitle[lang]}</h3>
           <p>{b.cycle[lang]}</p>
         </motion.div>
