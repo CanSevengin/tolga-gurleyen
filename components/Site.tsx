@@ -1,453 +1,255 @@
 "use client";
-
+import { createRef, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useInView,
-  useMotionValue,
-  useMotionValueEvent,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-import { jobs, site, ui, type Lang, type Job } from "@/lib/content";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
+import { LinkedinLogo, ArrowDown } from "@phosphor-icons/react";
+import Globe from "./Globe";
+import { chapters, site, ui, type Lang } from "@/lib/content";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+type L = { tr: string; en: string };
 
-function Reveal({ children, delay = 0, y = 40, className }: { children: React.ReactNode; delay?: number; y?: number; className?: string }) {
+function Nav({ lang }: { lang: Lang }) {
+  const other = lang === "tr" ? "en" : "tr";
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.9, delay, ease }}
-    >
-      {children}
+    <nav className="nav" aria-label="Main">
+      <a className="brand" href="#top">{site.name}</a>
+      <div className="links">
+        <a href="#about">{ui.nav.about[lang]}</a>
+        <a href="#journey">{ui.nav.journey[lang]}</a>
+        <a href="#babyjem">{ui.nav.babyjem[lang]}</a>
+        <a href="#memories">{ui.nav.memories[lang]}</a>
+      </div>
+      <div className="tools">
+        <div className="lang">
+          <Link href="/tr" className={lang === "tr" ? "on" : ""} aria-label="Türkçe">TR</Link>
+          <Link href="/en" className={lang === "en" ? "on" : ""} aria-label="English">EN</Link>
+        </div>
+        <a className="ico" href={site.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-other={other}>
+          <LinkedinLogo size={20} weight="regular" />
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Hero({ lang }: { lang: Lang }) {
+  const h = ui.hero;
+  return (
+    <header className="hero" id="top">
+      <Globe />
+      <div className="hero-in">
+        <h1>
+          <motion.span initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.2, 0.7, 0.2, 1] }}>{h.headA[lang]}</motion.span>
+          <motion.span className="lime" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.15, ease: [0.2, 0.7, 0.2, 1] }}>{h.headB[lang]}</motion.span>
+        </h1>
+        <motion.p className="sub" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.4 }}>{h.sub[lang]}</motion.p>
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.55 }}>
+          <a className="btn" href="#journey">{h.cta[lang]} <ArrowDown size={18} weight="bold" /></a>
+        </motion.div>
+      </div>
+      <span className="mono coords">41.01°N · 28.98°E · Istanbul</span>
+    </header>
+  );
+}
+
+function Word({ w, p, range, reduce }: { w: string; p: MotionValue<number>; range: [number, number]; reduce: boolean }) {
+  const o = useTransform(p, range, [0.16, 1]);
+  return <motion.span style={{ opacity: reduce ? 1 : o }}>{w}</motion.span>;
+}
+
+function About({ lang }: { lang: Lang }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduce = !!useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 55%"] });
+  const words = ui.about.text[lang].split(" ");
+  return (
+    <section className="about" id="about">
+      <div className="about-in">
+        <div className="pic"><img src={site.photos.portrait} alt={site.name} /></div>
+        <p className="words" ref={ref}>
+          {words.map((w, i) => (
+            <Word key={i} w={w} p={scrollYProgress} reduce={reduce} range={[i / words.length, Math.min(1, (i + 3) / words.length)]} />
+          ))}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ChapterCard({ i, lang, selfRef, nextRef, reduce }: { i: number; lang: Lang; selfRef: React.RefObject<HTMLElement | null>; nextRef?: React.RefObject<HTMLElement | null>; reduce: boolean }) {
+  const c = chapters[i];
+  const { scrollYProgress } = useScroll({ target: nextRef ?? selfRef, offset: ["start end", "start start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, nextRef && !reduce ? 0.93 : 1]);
+  const dim = useTransform(scrollYProgress, [0, 1], [1, nextRef && !reduce ? 0.5 : 1]);
+  const filter = useTransform(dim, (v) => `brightness(${v})`);
+  return (
+    <motion.article ref={selfRef as React.RefObject<HTMLElement>} className="card" style={{ top: 84 + i * 14, scale, filter }}>
+      <div>
+        <span className="yrs">{c.years[lang]}</span>
+        <h3>{c.title[lang]}</h3>
+        <p>{c.text[lang]}</p>
+      </div>
+      <div className="right">
+        <div className="places">{c.places.map((p) => <span key={p}>{p}</span>)}</div>
+        <div>
+          <div className="stat">{c.stat}</div>
+          <div className="stat-l">{c.statLabel[lang]}</div>
+        </div>
+      </div>
+      <span className="num">0{i + 1} / 0{chapters.length}</span>
+    </motion.article>
+  );
+}
+
+function Journey({ lang }: { lang: Lang }) {
+  const reduce = !!useReducedMotion();
+  const refs = useRef(chapters.map(() => createRef<HTMLElement>())).current;
+  return (
+    <section className="journey" id="journey">
+      <div className="sec-head">
+        <span className="mono">{ui.journey.kicker[lang]}</span>
+        <h2>{ui.journey.title[lang]}</h2>
+      </div>
+      <div className="stack">
+        {chapters.map((_, i) => (
+          <ChapterCard key={i} i={i} lang={lang} selfRef={refs[i]} nextRef={refs[i + 1]} reduce={reduce} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Photo({ k, alt }: { k: keyof typeof site.photos; alt: string }) {
+  return <img src={site.photos[k]} alt={alt} loading="lazy" />;
+}
+
+function Babyjem({ lang }: { lang: Lang }) {
+  const b = ui.babyjem;
+  const fade = { initial: { opacity: 0, y: 40 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-80px" }, transition: { duration: 0.8, ease: [0.2, 0.7, 0.2, 1] as [number, number, number, number] } };
+  return (
+    <section className="babyjem" id="babyjem">
+      <div className="sec-head">
+        <h2>{b.title[lang]}</h2>
+        <p style={{ marginTop: 18, color: "var(--mute)", fontSize: 20, maxWidth: "40ch" }}>{b.sub[lang]}</p>
+      </div>
+      <div className="bento">
+        <motion.div className="cell c7" {...fade}>
+          <Photo k="fairPartners" alt={b.capA[lang]} />
+          <div className="cap">{b.capA[lang]}</div>
+        </motion.div>
+        <motion.div className="cell txt c5" {...fade}>
+          <div className="big">4</div>
+          <div>
+            <h3>{b.regionsTitle[lang]}</h3>
+            <p>{b.regions[lang]}</p>
+          </div>
+        </motion.div>
+        <motion.div className="cell txt c4" {...fade}>
+          <h3>{b.cycleTitle[lang]}</h3>
+          <p>{b.cycle[lang]}</p>
+        </motion.div>
+        <motion.div className="cell c4" {...fade}>
+          <Photo k="fairVisitors" alt={b.capB[lang]} />
+          <div className="cap">{b.capB[lang]}</div>
+        </motion.div>
+        <motion.div className="cell c4" {...fade}>
+          <Photo k="fairColleague" alt={b.capC[lang]} />
+          <div className="cap">{b.capC[lang]}</div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function Memories({ lang }: { lang: Lang }) {
+  const sec = useRef<HTMLElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const [maxX, setMaxX] = useState(0);
+  const { scrollYProgress } = useScroll({ target: sec, offset: ["start start", "end end"] });
+  const x = useTransform(scrollYProgress, [0, 1], [0, -maxX]);
+  const bar = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
+  useLayoutEffect(() => {
+    const m = () => setMaxX(Math.max(0, (track.current?.scrollWidth ?? 0) - window.innerWidth));
+    m();
+    window.addEventListener("resize", m);
+    const imgs = track.current?.querySelectorAll("img");
+    imgs?.forEach((im) => im.addEventListener("load", m));
+    return () => { window.removeEventListener("resize", m); imgs?.forEach((im) => im.removeEventListener("load", m)); };
+  }, []);
+  return (
+    <section className="mem" id="memories" ref={sec} style={{ height: `${Math.round(Math.max(2.2, 1 + maxX / 700) * 100)}dvh` }}>
+      <div className="mem-pin">
+        <div className="sec-head"><h2>{ui.memories.title[lang]}</h2></div>
+        <motion.div className="mem-track" ref={track} style={{ x }}>
+          {ui.memories.items.map((m, i) => (
+            <figure className="mem-item" key={i}>
+              <img src={site.photos[m.photo as keyof typeof site.photos]} alt={m.caption[lang]} />
+              <figcaption>{m.caption[lang]}</figcaption>
+            </figure>
+          ))}
+        </motion.div>
+        <div className="mem-bar"><motion.i style={{ scaleX: bar }} /></div>
+      </div>
+    </section>
+  );
+}
+
+function Row({ name, note, reduce }: { name: string; note: string; reduce: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const o = useTransform(scrollYProgress, [0, 0.5, 1], [0.15, 1, 0.15]);
+  return (
+    <motion.div ref={ref} className="s-row" style={{ opacity: reduce ? 1 : o }}>
+      <div className="nm">{name}</div>
+      <div className="nt">{note}</div>
     </motion.div>
   );
 }
 
-/* ---------- NAV ---------- */
-function Nav({ lang }: { lang: Lang }) {
-  const n = ui.nav;
+function Strengths({ lang }: { lang: Lang }) {
+  const reduce = !!useReducedMotion();
   return (
-    <motion.header className="nav" initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.9, ease, delay: 0.2 }}>
-      <a href="#top" className="logo">
-        Tolga <b>Gürleyen</b>
-      </a>
-      <a className="link" href="#story">{n.story[lang]}</a>
-      <a className="link" href="#work">{n.work[lang]}</a>
-      <a className="link" href="#fairs">{n.fairs[lang]}</a>
-      <a className="link" href="#memories">{n.memories[lang]}</a>
-      <a className="link" href="#contact">{n.contact[lang]}</a>
-      <div className="lang" aria-label="Language">
-        <Link href="/tr" className={lang === "tr" ? "on" : ""} hrefLang="tr">TR</Link>
-        <Link href="/en" className={lang === "en" ? "on" : ""} hrefLang="en">EN</Link>
-      </div>
-    </motion.header>
-  );
-}
-
-/* ---------- HERO ---------- */
-function Hero({ lang }: { lang: Lang }) {
-  const h = ui.hero;
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const py = useTransform(scrollYProgress, [0, 1], [0, 140]);
-  const rot = useTransform(scrollYProgress, [0, 1], [0, 5]);
-  const sc = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setI((v) => (v + 1) % h.words.length), 2200);
-    return () => clearInterval(id);
-  }, [h.words.length]);
-
-  return (
-    <section id="top" className="hero" ref={ref}>
-      <motion.div className="blob" style={{ width: 560, height: 560, left: "-10%", top: "6%", background: "rgba(255,255,255,.16)", y: py }} />
-      <motion.div className="blob" style={{ width: 480, height: 480, right: "-8%", top: "30%", background: "rgba(150,160,190,.16)", y: textY }} />
-      <div className="blob" style={{ width: 360, height: 360, left: "40%", bottom: "-12%", background: "rgba(255,255,255,.08)" }} />
-      <div className="wrap hero-grid">
-        <motion.div style={{ y: textY, opacity: fade }}>
-          <motion.p className="hello" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.35 }}>
-            {h.hello[lang]}
-          </motion.p>
-          <h1 className="name">
-            {["Tolga", "Gürleyen"].map((w, k) => (
-              <span key={w} style={{ display: "block", overflow: "hidden", paddingBottom: ".08em" }}>
-                <motion.span
-                  className={k === 1 ? "grad" : ""}
-                  style={{ display: "inline-block" }}
-                  initial={{ y: "110%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1.1, ease, delay: 0.45 + k * 0.12 }}
-                >
-                  {w}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-          <motion.p className="role" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.9 }}>
-            {h.role[lang]}
-          </motion.p>
-          <motion.p className="headline" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15, duration: 0.9, ease }}>
-            {h.headline[lang]}
-          </motion.p>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}>
-            <span className="rot grad-warm">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={i}
-                  style={{ display: "inline-block" }}
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: "-100%", opacity: 0 }}
-                  transition={{ duration: 0.5, ease }}
-                >
-                  {h.words[i][lang]}
-                </motion.span>
-              </AnimatePresence>
-            </span>
-          </motion.div>
-          <motion.div className="btns" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.45, duration: 0.8, ease }}>
-            <a className="btn p" href="#work">{h.cta1[lang]} →</a>
-            <a className="btn s" href={site.linkedin} target="_blank" rel="noopener noreferrer">{h.cta2[lang]}</a>
-          </motion.div>
-        </motion.div>
-
-        <motion.div style={{ y: py, rotate: rot, scale: sc, position: "relative" }} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, ease, delay: 0.5 }}>
-          <motion.div className="sticker" style={{ background: "#f5f5f7", top: 24, left: -18 }} animate={{ y: [0, -10, 0], rotate: [-6, -3, -6] }} transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}>
-            30+ {lang === "tr" ? "yıl deneyim" : "years of experience"}
-          </motion.div>
-          <motion.div className="sticker" style={{ background: "rgba(40,40,44,.85)", color: "#f5f5f7", border: "1px solid rgba(255,255,255,.18)", backdropFilter: "blur(14px)", bottom: 70, right: -14 }} animate={{ y: [0, 12, 0], rotate: [5, 2, 5] }} transition={{ repeat: Infinity, duration: 5.2, ease: "easeInOut" }}>
-            📍 {h.location[lang]}
-          </motion.div>
-          <div className="portrait">
-            <img src={site.photos.portrait} alt="Tolga Gürleyen" fetchPriority="high" />
-          </div>
-        </motion.div>
-      </div>
-      <div className="scroll-hint">
-        {h.scroll[lang]}
-        <i />
+    <section className="strengths">
+      <div className="sec-head"><h2>{ui.strengths.title[lang]}</h2></div>
+      <div className="s-list">
+        {ui.strengths.items.map((s, i) => <Row key={i} name={s.name[lang]} note={s.note[lang]} reduce={reduce} />)}
       </div>
     </section>
   );
 }
 
-/* ---------- TICKER ---------- */
-function Ticker({ lang }: { lang: Lang }) {
-  const items = [...ui.ticker, ...ui.ticker];
+function Footer({ lang }: { lang: Lang }) {
+  const f = ui.footer;
+  const txt = (v: string | L) => (typeof v === "string" ? v : v[lang]);
+  const year = new Date().getFullYear();
   return (
-    <div className="ticker" aria-hidden>
-      <div className="ticker-track">
-        {items.map((t, k) => (
-          <span key={k}>{t[lang]}</span>
-        ))}
+    <footer className="foot">
+      <div className="foot-cols">
+        <div><h4>{f.edu[lang]}</h4><ul>{f.eduItems.map((e, i) => <li key={i}><b>{txt(e.n)}</b><span>{e.d[lang]}</span></li>)}</ul></div>
+        <div><h4>{f.lang[lang]}</h4><ul>{f.langItems.map((e, i) => <li key={i}><b>{txt(e.n)}</b><span>{e.d[lang]}</span></li>)}</ul></div>
+        <div><h4>{f.more[lang]}</h4><ul>{f.moreItems.map((e, i) => <li key={i}><b>{txt(e.n)}</b><span>{e.d[lang]}</span></li>)}</ul></div>
       </div>
-    </div>
-  );
-}
-
-/* ---------- STORY (word-by-word scroll reveal) ---------- */
-function Word({ w, p, a, b }: { w: string; p: MotionValue<number>; a: number; b: number }) {
-  const o = useTransform(p, [a, b], [0.14, 1]);
-  return <motion.span className="w" style={{ opacity: o }}>{w} </motion.span>;
-}
-function Story({ lang }: { lang: Lang }) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const words = ui.story.text[lang].split(" ");
-  const span = 0.8;
-  return (
-    <section id="story" className="story" ref={ref} style={{ height: "280vh" }}>
-      <div className="story-sticky">
-        <div className="wrap">
-          <span className="kicker">{ui.story.kicker[lang]}</span>
-          <p className="story-text">
-            {words.map((w, k) => (
-              <Word key={k} w={w} p={scrollYProgress} a={(k / words.length) * span} b={(k / words.length) * span + 0.06} />
-            ))}
-          </p>
-        </div>
+      <div className="wordmark" aria-hidden>{site.name}</div>
+      <div className="foot-bar">
+        <span>© {year} {site.name}. {f.rights[lang]}</span>
+        <a href={site.linkedin} target="_blank" rel="noopener noreferrer"><LinkedinLogo size={18} /> {f.linkedin}</a>
       </div>
-    </section>
-  );
-}
-
-/* ---------- STATS ---------- */
-function Counter({ to, suffix, lang }: { to: number; suffix: string; lang: Lang }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [v, setV] = useState(0);
-  useEffect(() => {
-    if (!inView) return;
-    const c = animate(0, to, { duration: 2, ease, onUpdate: (x) => setV(Math.round(x)) });
-    return () => c.stop();
-  }, [inView, to]);
-  return (
-    <span ref={ref} className="grad-warm">
-      {v.toLocaleString(lang === "tr" ? "tr-TR" : "en-US")}
-      {suffix}
-    </span>
-  );
-}
-function Stats({ lang }: { lang: Lang }) {
-  return (
-    <section className="stats">
-      <div className="wrap stat-grid">
-        {ui.stats.items.map((s, k) => (
-          <Reveal key={k} delay={k * 0.08}>
-            <div className="stat">
-              <div className="num"><Counter to={s.value} suffix={s.suffix} lang={lang} /></div>
-              <div className="lab">{s.label[lang]}</div>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ---------- WORK ---------- */
-function JobCard({ job, lang, open, toggle }: { job: Job; lang: Lang; open: boolean; toggle: () => void }) {
-  return (
-    <Reveal>
-      <div className={"job" + (open ? " open" : "")} style={{ ["--c" as string]: job.color }}>
-        <button className="job-head" onClick={toggle} aria-expanded={open}>
-          <span className="job-period">{job.period[lang]}</span>
-          <span>
-            <div className="job-company">
-              {job.company}
-              {job.current && <span className="badge">{ui.work.now[lang]}</span>}
-            </div>
-            <div className="job-title">{job.title[lang]} · {job.place}</div>
-          </span>
-          <span className="plus">+</span>
-        </button>
-        <AnimatePresence initial={false}>
-          {open && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.5, ease }}
-              style={{ overflow: "hidden" }}
-            >
-              <div className="job-body">
-                <p>{job.summary[lang]}</p>
-                {job.points.length > 0 && (
-                  <ul>
-                    {job.points.map((p, k) => (
-                      <li key={k}>{p[lang]}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </Reveal>
-  );
-}
-function Work({ lang }: { lang: Lang }) {
-  const [open, setOpen] = useState<string | null>("babyjem");
-  return (
-    <section id="work" className="work light">
-      <div className="wrap">
-        <Reveal>
-          <span className="kicker">{ui.work.kicker[lang]}</span>
-          <h2 className="h2">{ui.work.title[lang]}</h2>
-          <p className="hint">{ui.work.hint[lang]}</p>
-        </Reveal>
-        <div className="jobs">
-          {jobs.map((j) => (
-            <JobCard key={j.id} job={j} lang={lang} open={open === j.id} toggle={() => setOpen(open === j.id ? null : j.id)} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- FAIRS ---------- */
-function FairCard({ src, mid, lang }: { src: string; mid?: boolean; lang: Lang }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-9%", "0%"]);
-  return (
-    <Reveal>
-      <div ref={ref} className={"fair-card" + (mid ? " mid" : "")}>
-        <motion.img src={src} alt={ui.fairs.caption[lang]} style={{ y }} loading="lazy" />
-        <span className="cap">{ui.fairs.caption[lang]}</span>
-      </div>
-    </Reveal>
-  );
-}
-function Fairs({ lang }: { lang: Lang }) {
-  const p = site.photos;
-  return (
-    <section id="fairs" className="fairs">
-      <div className="wrap">
-        <div className="fair-top">
-          <Reveal>
-            <span className="kicker">{ui.fairs.kicker[lang]}</span>
-            <h2 className="h2">{ui.fairs.title[lang]}</h2>
-          </Reveal>
-          <Reveal delay={0.12}><p>{ui.fairs.text[lang]}</p></Reveal>
-        </div>
-        <div className="fair-grid">
-          <FairCard src={p.fairVisitors} lang={lang} />
-          <FairCard src={p.fairPartners} mid lang={lang} />
-          <FairCard src={p.fairColleague} lang={lang} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- MEMORIES (pinned horizontal scroll) ---------- */
-function Memories({ lang }: { lang: Lang }) {
-  const ref = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const max = useMotionValue(0);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.4 });
-  const [dist, setDist] = useState(0);
-  useLayoutEffect(() => {
-    const m = () => {
-      if (!trackRef.current) return;
-      const d = Math.max(0, trackRef.current.scrollWidth - window.innerWidth);
-      setDist(d);
-      max.set(d);
-    };
-    m();
-    window.addEventListener("resize", m);
-    const t = setTimeout(m, 600);
-    return () => { window.removeEventListener("resize", m); clearTimeout(t); };
-  }, [max]);
-  const x = useTransform(smooth, [0.04, 0.96], [0, -dist]);
-  const photos = site.photos as Record<string, string>;
-  const wide = new Set(["disco", "teamNight"]);
-  return (
-    <section id="memories" className="mem" ref={ref}>
-      <div className="mem-pin">
-        <div className="wrap mem-head">
-          <span className="kicker">{ui.memories.kicker[lang]}</span>
-          <h2 className="h2" style={{ fontSize: "clamp(30px,5vw,60px)" }}>{ui.memories.title[lang]}</h2>
-        </div>
-        <motion.div className="mem-track" ref={trackRef} style={{ x }}>
-          {ui.memories.items.map((m, k) => (
-            <div key={k} className={"mem-card" + (wide.has(m.photo) ? " wide" : "")}>
-              <img src={photos[m.photo]} alt={m.caption[lang]} loading="lazy" />
-              <span className="cap">{m.caption[lang]}</span>
-            </div>
-          ))}
-        </motion.div>
-        <div className="wrap" style={{ width: "min(1200px, calc(100% - 40px))" }}>
-          <div className="mem-bar"><motion.i style={{ scaleX: scrollYProgress }} /></div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- SKILLS + EDU ---------- */
-function Skills({ lang }: { lang: Lang }) {
-  const e = ui.edu;
-  return (
-    <section className="skills light">
-      <div className="wrap">
-        <Reveal>
-          <span className="kicker">{ui.skills.kicker[lang]}</span>
-          <h2 className="h2">{ui.skills.title[lang]}</h2>
-        </Reveal>
-        <div className="chips">
-          {ui.skills.items.map((s, k) => (
-            <motion.span
-              key={k}
-              className="chip"
-              initial={{ opacity: 0, y: 24, scale: 0.9 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, ease, delay: k * 0.05 }}
-            >
-              {s[lang]}
-            </motion.span>
-          ))}
-        </div>
-        <div className="edu-grid">
-          <Reveal className="card">
-            <h3>{lang === "tr" ? "Eğitim" : "Education"}</h3>
-            {e.items.map((it, k) => (
-              <div key={k} className="edu-item">
-                <b>{it.title[lang]}</b>
-                <span>{it.sub[lang]}</span>
-              </div>
-            ))}
-          </Reveal>
-          <Reveal delay={0.1} className="card">
-            <h3>{lang === "tr" ? "Diller" : "Languages"}</h3>
-            {e.langs.map((l, k) => (
-              <div key={k} className="lang-row">{l.name[lang]} <span>{l.level[lang]}</span></div>
-            ))}
-            <p className="cert">{e.cert[lang]}</p>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- CONTACT ---------- */
-function Contact({ lang }: { lang: Lang }) {
-  const c = ui.contact;
-  return (
-    <section id="contact" className="contact">
-      <div className="blob" style={{ width: 560, height: 560, left: "50%", top: "6%", marginLeft: -280, background: "rgba(255,255,255,.14)", opacity: 0.6 }} />
-      <div className="wrap" style={{ position: "relative" }}>
-        <Reveal>
-          <span className="kicker">{c.kicker[lang]}</span>
-          <h2 className="h2 grad">{c.title[lang]}</h2>
-          <p>{c.text[lang]}</p>
-          <div className="btns">
-            <a className="btn p" href={`mailto:${site.email}`}>{c.mail[lang]}</a>
-            <a className="btn s" href={site.linkedin} target="_blank" rel="noopener noreferrer">{c.li[lang]}</a>
-          </div>
-        </Reveal>
-        <div className="foot">
-          <span>© {new Date().getFullYear()} {site.name}. {c.rights[lang]}</span>
-          <span>{ui.hero.location[lang]}</span>
-        </div>
-      </div>
-    </section>
+    </footer>
   );
 }
 
 export default function Site({ lang }: { lang: Lang }) {
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   return (
     <main>
       <Nav lang={lang} />
       <Hero lang={lang} />
-      <Ticker lang={lang} />
-      <Story lang={lang} />
-      <Stats lang={lang} />
-      <Work lang={lang} />
-      <Fairs lang={lang} />
+      <About lang={lang} />
+      <Journey lang={lang} />
+      <Babyjem lang={lang} />
       <Memories lang={lang} />
-      <Skills lang={lang} />
-      <Contact lang={lang} />
+      <Strengths lang={lang} />
+      <Footer lang={lang} />
     </main>
   );
 }
