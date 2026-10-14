@@ -27,6 +27,7 @@ export const ui = {
     journey: t("Yolculuk", "Journey"),
     babyjem: t("Babyjem", "Babyjem"),
     memories: t("Anılar", "Memories"),
+    blog: t("Yazılar", "Notes"),
   },
   hero: {
     headA: t("İstanbul'dan", "From Istanbul to"),
@@ -184,5 +185,80 @@ export const chapters: Chapter[] = [
     stat: "4",
     statLabel: t("odak bölge", "focus regions"),
     places: ["Babyjem"],
+  },
+];
+
+export const blog = {
+  title: t("Anı defteri.", "Memory notebook."),
+  sub: t("Sahadan notlar, fuar dönüşü düşünceler, yolda biriken küçük hikâyeler.", "Notes from the field, thoughts after a fair, small stories picked up on the road."),
+  back: t("Tüm yazılar", "All notes"),
+  read: t("Oku", "Read"),
+  min: t("dk okuma", "min read"),
+};
+
+export type Post = {
+  slug: string;
+  date: L;
+  min: number;
+  cover: keyof typeof site.photos;
+  title: L;
+  excerpt: L;
+  body: L[];
+};
+
+// Örnek yazılar. Yeni yazı eklemek için bu listeye bir kayıt ekleyin.
+// Sample posts. To add a new one, append an entry to this list.
+export const posts: Post[] = [
+  {
+    slug: "fuar-sabahi",
+    date: t("Ekim 2026", "October 2026"),
+    min: 2,
+    cover: "fairPartners",
+    title: t("Fuar sabahı", "Fair morning"),
+    excerpt: t("Kapılar açılmadan önceki bir saat, günün en sakin ve en önemli saati.", "The hour before the doors open, the calmest and most important hour of the day."),
+    body: [
+      t("Fuarın en güzel saati kapılar açılmadan önceki saattir. Koridorlar boş, stantlar son kez düzeltilir, herkes kahvesini eline almış sessizce bekler.", "The best hour of a fair is the one before the doors open. The aisles are empty, booths get their last adjustments and everyone waits quietly with a coffee in hand."),
+      t("O saatte ürünlerin yerini, kataloğun durduğu masayı, ilk gelecek misafire söyleyeceğim cümleyi bir kez daha gözden geçiririm. Fuarın geri kalanı bu hazırlığın üzerine kurulur.", "In that hour I check the position of the products, the table where the catalogue sits and the first sentence I will say to the first guest. The rest of the fair is built on that preparation."),
+      t("Sonra kapılar açılır ve sessizlik biter. Ama o sabahın sakinliği, gün boyu taşıdığım bir şey olarak kalır.", "Then the doors open and the quiet ends. But the calm of that morning stays with me all day."),
+    ],
+  },
+  {
+    slug: "ilk-gorusmede-guven",
+    date: t("Ekim 2026", "October 2026"),
+    min: 2,
+    cover: "fairVisitors",
+    title: t("İlk görüşmede güven", "Trust in the first meeting"),
+    excerpt: t("İyi bir ilk görüşme satış yapmakla değil, dinlemekle başlar.", "A good first meeting starts with listening, not with selling."),
+    body: [
+      t("Yeni biriyle ilk kez oturduğunuzda kapanış cümlesini düşünmek cazip gelir. Oysa ilk görüşmenin işi sadece karşınızdakini anlamaktır.", "When you sit down with someone new it is tempting to think about the closing line. The job of a first meeting is simply to understand the person across the table."),
+      t("Ne sattığını, kime sattığını, neyi önemsediğini sorarım. Cevaplar çoğu zaman benim hazırladığım sunumdan daha değerlidir.", "I ask what they sell, who they sell to and what they care about. The answers are often worth more than the presentation I prepared."),
+      t("Güven, ilk görüşmede verilen sözlerle değil, sonraki yıllarda tutulan sözlerle kurulur. İlk görüşme sadece o yolun başıdır.", "Trust is built not by promises made in the first meeting but by promises kept in the years after. The first meeting is only the start of that road."),
+    ],
+  },
+  {
+    slug: "bavuldaki-uc-sey",
+    date: t("Eylül 2026", "September 2026"),
+    min: 1,
+    cover: "cologne",
+    title: t("Bavuldaki üç şey", "Three things in the suitcase"),
+    excerpt: t("Yıllar içinde her yolculukta yanımda taşıdığım küçük alışkanlıklar.", "Small habits I have carried on every trip over the years."),
+    body: [
+      t("Sık seyahat edince bavul sadeleşir. Yıllar içinde elimde kalan üç şey var: bir not defteri, rahat bir ayakkabı ve yeni bir şehri yürüyerek keşfetme isteği.", "Frequent travel simplifies a suitcase. Over the years three things have stayed: a notebook, a comfortable pair of shoes and the urge to explore a new city on foot."),
+      t("Not defterine toplantıdan çok, toplantı sonrası aklıma gelenleri yazarım. En iyi fikirler genelde kapıdan çıkarken gelir.", "In the notebook I write less about the meeting and more about what comes to mind afterwards. The best ideas usually arrive on the way out the door."),
+      t("Rahat ayakkabı ise gezmek için değil, ayakta geçen fuar günleri için. Her uzun günün sonunda ona teşekkür ederim.", "The comfortable shoes are not for sightseeing but for long days on my feet at fairs. I thank them at the end of every long day."),
+    ],
+  },
+  {
+    slug: "ekiple-aksam",
+    date: t("Eylül 2026", "September 2026"),
+    min: 1,
+    cover: "teamNight",
+    title: t("Ekiple akşam yemeği", "Dinner with the team"),
+    excerpt: t("Fuar günü biter, asıl sohbet masada başlar.", "The fair day ends and the real conversation begins at the table."),
+    body: [
+      t("Yoğun bir fuar gününün ardından ekiple birlikte oturmak, günün en değerli kısmı olabiliyor. Toplantıda söylenmeyenler masada söylenir.", "Sitting down with the team after a busy fair day can be the most valuable part of it. What was not said in the meetings gets said at the table."),
+      t("Gün içinde kimin kiminle konuştuğunu, hangi fikrin ilgi gördüğünü o akşam birlikte toparlarız. Ertesi sabah daha hazır başlarız.", "That evening we piece together who spoke with whom and which idea drew interest. We start the next morning better prepared."),
+      t("İş arkadaşlığının en güzel anları, çoğu zaman programda yazmayan bu akşamlardır.", "The best moments of working together are often these evenings that are never in the schedule."),
+    ],
   },
 ];

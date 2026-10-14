@@ -5,32 +5,9 @@ import { motion, useReducedMotion, useScroll, useSpring, useTransform, type Moti
 import { LinkedinLogo, ArrowDown, ArrowRight } from "@phosphor-icons/react";
 import Board from "./Board";
 import { chapters, site, ui, type Lang } from "@/lib/content";
+import Nav from "./Nav";
 
 type L = { tr: string; en: string };
-
-function Nav({ lang }: { lang: Lang }) {
-  const other = lang === "tr" ? "en" : "tr";
-  return (
-    <nav className="nav" aria-label="Main">
-      <a className="brand" href="#top">{site.name}</a>
-      <div className="links">
-        <a href="#about">{ui.nav.about[lang]}</a>
-        <a href="#journey">{ui.nav.journey[lang]}</a>
-        <a href="#babyjem">{ui.nav.babyjem[lang]}</a>
-        <a href="#memories">{ui.nav.memories[lang]}</a>
-      </div>
-      <div className="tools">
-        <div className="lang">
-          <Link href="/tr" className={lang === "tr" ? "on" : ""} aria-label="Türkçe">TR</Link>
-          <Link href="/en" className={lang === "en" ? "on" : ""} aria-label="English">EN</Link>
-        </div>
-        <a className="ico" href={site.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-other={other}>
-          <LinkedinLogo size={20} weight="regular" />
-        </a>
-      </div>
-    </nav>
-  );
-}
 
 function Hero({ lang }: { lang: Lang }) {
   const h = ui.hero;
